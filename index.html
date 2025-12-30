@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mi Tienda de Ropa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Mi Tienda de Ropa</h1>
+  <p>Moda online · Argentina</p>
+</header>
+
+<nav>
+  <a href="#">Inicio</a>
+  <a href="#">Productos</a>
+  <a href="#">Carrito (<span id="contador-carrito">0</span>)</a>
+</nav>
+
+<main>
+
+  <h2>Productos destacados</h2>
+
+  <section class="productos">
+
+    <div class="producto">
+      <h3>Remera básica</h3>
+      <p>$12000</p>
+      <button onclick="agregarAlCarrito('Remera básica', 12000)">
+        Agregar al carrito
+      </button>
+    </div>
+
+    <div class="producto">
+      <h3>Buzo oversize</h3>
+      <p>$25000</p>
+      <button onclick="agregarAlCarrito('Buzo oversize', 25000)">
+        Agregar al carrito
+      </button>
+    </div>
+
+    <div class="producto">
+      <h3>Pantalón cargo</h3>
+      <p>$30000</p>
+      <button onclick="agregarAlCarrito('Pantalón cargo', 30000)">
+        Agregar al carrito
+      </button>
+    </div>
+
+  </section>
+
+  <section class="carrito">
+    <h2>Carrito</h2>
+    <ul id="lista-carrito"></ul>
+    <p id="total"></p>
+
+    <button onclick="comprar()">COMPRAR</button>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2025 · Mi Tienda de Ropa · Envíos a toda Argentina</p>
+</footer>
+
+<script>
+  // ===== CARRITO CON PERSISTENCIA =====
+  let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  let contador = carrito.length;
+
+  document.getElementById("contador-carrito").textContent = contador;
+
+  function guardarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }
+
+  function agregarAlCarrito(nombre, precio) {
+    carrito.push({ nombre, precio });
+    contador = carrito.length;
+    document.getElementById("contador-carrito").textContent = contador;
+    guardarCarrito();
+    mostrarCarrito();
+  }
+
+  function mostrarCarrito() {
+    const lista = document.getElementById("lista-carrito");
+    const total = document.getElementById("total");
+
+    lista.innerHTML = "";
+    let suma = 0;
+
+    carrito.forEach(p => {
+      const li = document.createElement("li");
+      li.textContent = p.nombre + " - $" + p.precio;
+      lista.appendChild(li);
+      suma += p.precio;
+    });
+
+    total.textContent = "Total: $" + suma;
+  }
+
+  // ===== COMPRAR POR WHATSAPP =====
+  function comprar() {
+    if (carrito.length === 0) {
+      alert("El carrito está vacío");
+      return;
+    }
+
+    let mensaje = "Hola! Quiero hacer este pedido:%0A%0A";
+    let total = 0;
+
+    carrito.forEach(p => {
+      mensaje += "- " + p.nombre + " $" + p.precio + "%0A";
+      total += p.precio;
+    });
+
+    mensaje += "%0ATotal: $" + total;
+
+    // 👉 CAMBIÁ ESTE NÚMERO POR EL TUYO
+    const telefono = "5493575416164";
+
+    const url = "https://wa.me/" + telefono + "?text=" + mensaje;
+    window.open(url, "_blank");
+  }
+
+  mostrarCarrito();
+</script>
+
+</body>
+</html>
